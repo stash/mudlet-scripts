@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<AliasPackage>
+		<AliasGroup isActive="yes" isFolder="yes">
+			<name>my code</name>
+			<script></script>
+			<command></command>
+			<packageName></packageName>
+			<regex></regex>
+			<Alias isActive="yes" isFolder="no">
+				<name>Fixroom</name>
+				<script>local areaName = gmcp.Room.Info.area
+local areaNum = mmp.findAreaID(areaName, true)
+echo(areaName .. " is " .. areaNum .. "\n")
+
+local function getshiftedcoords(dir, ox, oy, oz)
+  local x, y, z
+  local has = table.contains
+  w = mmp.anytolong(dir)
+  if has({"west", "w"}, w) then
+    x = (x or ox) - 1
+    y = (y or oy)
+    z = (z or oz)
+  elseif has({"east", "e"}, w) then
+    x = (x or ox) + 1
+    y = (y or oy)
+    z = (z or oz)
+  elseif has({"north", "n"}, w) then
+    x = (x or ox)
+    y = (y or oy) + 1
+    z = (z or oz)
+  elseif has({"south", "s"}, w) then
+    x = (x or ox)
+    y = (y or oy) - 1
+    z = (z or oz)
+  elseif has({"northwest", "nw"}, w) then
+    x = (x or ox) - 1
+    y = (y or oy) + 1
+    z = (z or oz)
+  elseif has({"northeast", "ne"}, w) then
+    x = (x or ox) + 1
+    y = (y or oy) + 1
+    z = (z or oz)
+  elseif has({"southeast", "se",}, w) then
+    x = (x or ox) + 1
+    y = (y or oy) - 1
+    z = (z or oz)
+  elseif has({"southwest", "sw"}, w) then
+    x = (x or ox) - 1
+    y = (y or oy) - 1
+    z = (z or oz)
+  elseif has({"up", "u"}, w) then
+    x = (x or ox)
+    y = (y or oy)
+    z = (z or oz) + 1
+  elseif has({"down", "d"}, w) then
+    x = (x or ox)
+    y = (y or oy)
+    z = (z or oz) - 1
+  else
+    mmp.echo(
+      "Don't know where to shift the coordinates for a " ..
+      tostring(w) ..
+      " (" ..
+      tostring(original) ..
+      ") exit."
+    )
+  end
+  return x, y, z
+end
+
+local divBy = 10
+if areaName == "sewer" then
+  divBy = 1
+end
+
+local c = string.split(gmcp.Room.Info.coord,",")
+local ax = (c[2] + 0) / divBy
+local ay = (c[3] + 0) / divBy
+local az = (c[4] + 0) / divBy
+
+--local rox,roy,roz = getRoomCoordinates(mmp.currentroom)
+echo("thisroom x:" .. ax .. " y:" .. ay .. " z:" .. az .. "\n")
+for dir,roomNum in pairs(gmcp.Room.Info.exits) do
+  echo("  exit to " .. dir .. " is " .. roomNum .. "\n")
+  local rx, ry, rz = getshiftedcoords(dir, ax, ay, az)
+  echo("    x:" .. rx .. " y:" .. ry .. " z:" .. rz .. "\n")
+  setRoomArea(roomNum, areaNum)
+  setRoomCoordinates(roomNum, rx, ry, rz)
+end
+</script>
+				<command></command>
+				<packageName></packageName>
+				<regex>^fix(this)?room$</regex>
+			</Alias>
+		</AliasGroup>
+	</AliasPackage>
+</MudletPackage>
